@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.view.View;
 
 import java.io.Console;
 import java.util.ArrayList;
@@ -18,10 +17,6 @@ import java.util.HashMap;
 
 // Performing sql command to the supported database
 public class myDb extends SQLiteOpenHelper {
-
-    private volatile boolean stopThread = false;
-    public SQLiteDatabase db;
-    Runnable runnable;
     private	static final int DATABASE_VERSION =	3;
     private static final String DATABASE_NAME = "myDb.db"; // db name
     private static final String TABLE_NAME = "goal"; // table name
@@ -34,36 +29,11 @@ public class myDb extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    public void  startThread(View view) {
-        stopThread = false;
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                final String TABLE_CREATION = "create table if not exists " + TABLE_NAME + "( "
-                        + COLUMNS[0] + " integer primary key autoincrement ,"
-                        + COLUMNS[1] + " text , "
-                        + COLUMNS[2] + " text , "
-                        + COLUMNS[3] + " text , "
-                        + COLUMNS[4] + " text " + ")";
-                db.execSQL(TABLE_CREATION);
-                //MONEY SPEND TABLE
-                final String MONEY_TABLE_CREATION = "create table if not exists " + MONEY_TABLE + "( "
-                        + MONEY_COLUMNS[0] + " integer primary key autoincrement ,"
-                        + MONEY_COLUMNS[1] + " text , "
-                        + MONEY_COLUMNS[2] + " text , "
-                        + MONEY_COLUMNS[3] + " text , "
-                        + MONEY_COLUMNS[4] + " text " + ")";
-                db.execSQL(MONEY_TABLE_CREATION);
-            }
-        };
-    }
-
-
     @Override
     public void onCreate(SQLiteDatabase db) {
         // Table creation sql statement
         //CHALLENGE TABLE
-        /*final String TABLE_CREATION = "create table if not exists " + TABLE_NAME + "( "
+        final String TABLE_CREATION = "create table if not exists " + TABLE_NAME + "( "
                 + COLUMNS[0] + " integer primary key autoincrement ,"
                 + COLUMNS[1] + " text , "
                 + COLUMNS[2] + " text , "
@@ -77,11 +47,7 @@ public class myDb extends SQLiteOpenHelper {
                 + MONEY_COLUMNS[2] + " text , "
                 + MONEY_COLUMNS[3] + " text , "
                 + MONEY_COLUMNS[4] + " text " + ")";
-        db.execSQL(MONEY_TABLE_CREATION);*/
-
-        db = this.db;
-        new Thread(runnable).start();
-
+        db.execSQL(MONEY_TABLE_CREATION);
     }
 
     @Override
@@ -199,7 +165,6 @@ public class myDb extends SQLiteOpenHelper {
         // i. Create an ContentValues object
         // ii. Setup the ContentValues object with provided job information from the input job and the "put" method
         // iii. Employ the "update" method with the "db" object with respect to the job id of the input job object
-
         ContentValues values = new ContentValues();
         values.put(COLUMNS[1], job.getTitle());
         values.put(COLUMNS[2], job.getDetails());
@@ -207,7 +172,6 @@ public class myDb extends SQLiteOpenHelper {
         values.put(COLUMNS[4], job.getTime());
         values.put(COLUMNS[5], job.getPriorityString());
         values.put(COLUMNS[6], job.getCategoryString());
-
         db.update(TABLE_NAME, values, COLUMNS[0]	+ "	= ?", new String[] { String.valueOf(job.getJobid())});
     }*/
 
@@ -283,5 +247,4 @@ public class myDb extends SQLiteOpenHelper {
         cursor.close();
         return spendArray;
     }
-
 }
